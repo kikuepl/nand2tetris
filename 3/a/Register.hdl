@@ -42,7 +42,7 @@ CHIP Register {
         
         Mux(a = fb9, b = in[9], sel = load, out = w9);
         DFF(in = w9, out = out[9], out = fb9);
-        
+
         Mux(a = fb10, b = in[10], sel = load, out = w10);
         DFF(in = w10, out = out[10], out = fb10);
         
