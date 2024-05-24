@@ -1,0 +1,136 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/2/Add16.hdl
+/**
+ * 16-bit adder: Adds two 16-bit two's complement values.
+ * The most significant carry bit is ignored.
+ */
+CHIP Add16 {
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+    Xor(a = a[0], b = b[0], out = out[0]);
+    And(a = a[0], b = b[0], out = carry0);
+
+    Xor(a = a[1], b = b[1], out = axorb1);
+    Xor(a = axorb1, b = carry0, out = out[1]);
+
+    And(a = b[1], b = carry0, out = bandc1);
+    Xor(a = b[1], b = carry0, out = bxorc1);
+    And(a = a[1], b = bxorc1, out = abxorc1);
+    Or(a = bandc1, b = abxorc1, out = carry1);
+
+    Xor(a = a[2], b = b[2], out = axorb2);
+    Xor(a = axorb2, b = carry1, out = out[2]);
+
+    And(a = b[2], b = carry1, out = bandc2);
+    Xor(a = b[2], b = carry1, out = bxorc2);
+    And(a = a[2], b = bxorc2, out = abxorc2);
+    Or(a = bandc2, b = abxorc2, out = carry2);
+
+    Xor(a = a[3], b = b[3], out = axorb3);
+    Xor(a = axorb3, b = carry2, out = out[3]);
+
+    And(a = b[3], b = carry2, out = bandc3);
+    Xor(a = b[3], b = carry2, out = bxorc3);
+    And(a = a[3], b = bxorc3, out = abxorc3);
+    Or(a = bandc3, b = abxorc3, out = carry3);
+
+    Xor(a = a[4], b = b[4], out = axorb4);
+    Xor(a = axorb4, b = carry3, out = out[4]);
+
+    And(a = b[4], b = carry3, out = bandc4);
+    Xor(a = b[4], b = carry3, out = bxorc4);
+    And(a = a[4], b = bxorc4, out = abxorc4);
+    Or(a = bandc4, b = abxorc4, out = carry4);
+
+    Xor(a = a[5], b = b[5], out = axorb5);
+    Xor(a = axorb5, b = carry4, out = out[5]);
+
+    And(a = b[5], b = carry4, out = bandc5);
+    Xor(a = b[5], b = carry4, out = bxorc5);
+    And(a = a[5], b = bxorc5, out = abxorc5);
+    Or(a = bandc5, b = abxorc5, out = carry5);
+
+    Xor(a = a[6], b = b[6], out = axorb6);
+    Xor(a = axorb6, b = carry5, out = out[6]);
+
+    And(a = b[6], b = carry5, out = bandc6);
+    Xor(a = b[6], b = carry5, out = bxorc6);
+    And(a = a[6], b = bxorc6, out = abxorc6);
+    Or(a = bandc6, b = abxorc6, out = carry6);
+
+    Xor(a = a[7], b = b[7], out = axorb7);
+    Xor(a = axorb7, b = carry6, out = out[7]);
+
+    And(a = b[7], b = carry6, out = bandc7);
+    Xor(a = b[7], b = carry6, out = bxorc7);
+    And(a = a[7], b = bxorc7, out = abxorc7);
+    Or(a = bandc7, b = abxorc7, out = carry7);
+
+    Xor(a = a[8], b = b[8], out = axorb8);
+    Xor(a = axorb8, b = carry7, out = out[8]);
+
+    And(a = b[8], b = carry7, out = bandc8);
+    Xor(a = b[8], b = carry7, out = bxorc8);
+    And(a = a[8], b = bxorc8, out = abxorc8);
+    Or(a = bandc8, b = abxorc8, out = carry8);
+
+    Xor(a = a[9], b = b[9], out = axorb9);
+    Xor(a = axorb9, b = carry8, out = out[9]);
+
+    And(a = b[9], b = carry8, out = bandc9);
+    Xor(a = b[9], b = carry8, out = bxorc9);
+    And(a = a[9], b = bxorc9, out = abxorc9);
+    Or(a = bandc9, b = abxorc9, out = carry9);
+
+    Xor(a = a[10], b = b[10], out = axorb10);
+    Xor(a = axorb10, b = carry9, out = out[10]);
+
+    And(a = b[10], b = carry9, out = bandc10);
+    Xor(a = b[10], b = carry9, out = bxorc10);
+    And(a = a[10], b = bxorc10, out = abxorc10);
+    Or(a = bandc10, b = abxorc10, out = carry10);
+
+    Xor(a = a[11], b = b[11], out = axorb11);
+    Xor(a = axorb11, b = carry10, out = out[11]);
+
+    And(a = b[11], b = carry10, out = bandc11);
+    Xor(a = b[11], b = carry10, out = bxorc11);
+    And(a = a[11], b = bxorc11, out = abxorc11);
+    Or(a = bandc11, b = abxorc11, out = carry11);
+
+    Xor(a = a[12], b = b[12], out = axorb12);
+    Xor(a = axorb12, b = carry11, out = out[12]);
+
+    And(a = b[12], b = carry11, out = bandc12);
+    Xor(a = b[12], b = carry11, out = bxorc12);
+    And(a = a[12], b = bxorc12, out = abxorc12);
+    Or(a = bandc12, b = abxorc12, out = carry12);
+
+    Xor(a = a[13], b = b[13], out = axorb13);
+    Xor(a = axorb13, b = carry12, out = out[13]);
+
+    And(a = b[13], b = carry12, out = bandc13);
+    Xor(a = b[13], b = carry12, out = bxorc13);
+    And(a = a[13], b = bxorc13, out = abxorc13);
+    Or(a = bandc13, b = abxorc13, out = carry13);
+
+    Xor(a = a[14], b = b[14], out = axorb14);
+    Xor(a = axorb14, b = carry13, out = out[14]);
+
+    And(a = b[14], b = carry13, out = bandc14);
+    Xor(a = b[14], b = carry13, out = bxorc14);
+    And(a = a[14], b = bxorc14, out = abxorc14);
+    Or(a = bandc14, b = abxorc14, out = carry14);
+
+    Xor(a = a[15], b = b[15], out = axorb15);
+    Xor(a = axorb15, b = carry14, out = out[15]);
+
+    And(a = b[15], b = carry14, out = bandc15);
+    Xor(a = b[15], b = carry14, out = bxorc15);
+    And(a = a[15], b = bxorc15, out = abxorc15);
+    Or(a = bandc15, b = abxorc15, out = carry15);
+}

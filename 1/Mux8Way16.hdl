@@ -1,0 +1,61 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Mux8Way16.hdl
+/**
+ * 8-way 16-bit multiplexor:
+ * out = a if sel = 000
+ *       b if sel = 001
+ *       c if sel = 010
+ *       d if sel = 011
+ *       e if sel = 100
+ *       f if sel = 101
+ *       g if sel = 110
+ *       h if sel = 111
+ */
+CHIP Mux8Way16 {
+    IN a[16], b[16], c[16], d[16],
+       e[16], f[16], g[16], h[16],
+       sel[3];
+    OUT out[16];
+
+    PARTS:
+    Not (in=sel[0], out=nsel0);
+    Not (in=sel[1], out=nsel1);
+    Not (in=sel[2], out=nsel2);
+
+    And(a=nsel2, b=nsel1, out=tmp00);
+    And(a=tmp00, b=nsel0, out=sel0);
+    And(a=tmp00, b=sel[0],out=sel1);
+
+    And(a=nsel2, b=sel[1],out=tmp01);
+    And(a=tmp01, b=nsel0, out=sel2);
+    And(a=tmp01, b=sel[0],out=sel3);
+
+    And(a=sel[2],b=nsel1, out=tmp10);
+    And(a=tmp10, b=nsel0, out=sel4);
+    And(a=tmp10, b=sel[0],out=sel5);
+
+    And(a=sel[2],b=sel[1],out=tmp11);
+    And(a=tmp11, b=nsel0, out=sel6);
+    And(a=tmp11, b=sel[0],out=sel7);
+
+    And16(a=a, b[0]=sel0, b[1]=sel0, b[2]=sel0, b[3]=sel0, b[4]=sel0, b[5]=sel0, b[6]=sel0, b[7]=sel0, b[8]=sel0, b[9]=sel0, b[10]=sel0, b[11]=sel0, b[12]=sel0, b[13]=sel0, b[14]=sel0, b[15]=sel0, out=aOut);
+    And16(a=b, b[0]=sel1, b[1]=sel1, b[2]=sel1, b[3]=sel1, b[4]=sel1, b[5]=sel1, b[6]=sel1, b[7]=sel1, b[8]=sel1, b[9]=sel1, b[10]=sel1, b[11]=sel1, b[12]=sel1, b[13]=sel1, b[14]=sel1, b[15]=sel1, out=bOut);
+    And16(a=c, b[0]=sel2, b[1]=sel2, b[2]=sel2, b[3]=sel2, b[4]=sel2, b[5]=sel2, b[6]=sel2, b[7]=sel2, b[8]=sel2, b[9]=sel2, b[10]=sel2, b[11]=sel2, b[12]=sel2, b[13]=sel2, b[14]=sel2, b[15]=sel2, out=cOut);
+    And16(a=d, b[0]=sel3, b[1]=sel3, b[2]=sel3, b[3]=sel3, b[4]=sel3, b[5]=sel3, b[6]=sel3, b[7]=sel3, b[8]=sel3, b[9]=sel3, b[10]=sel3, b[11]=sel3, b[12]=sel3, b[13]=sel3, b[14]=sel3, b[15]=sel3, out=dOut);
+    And16(a=e, b[0]=sel4, b[1]=sel4, b[2]=sel4, b[3]=sel4, b[4]=sel4, b[5]=sel4, b[6]=sel4, b[7]=sel4, b[8]=sel4, b[9]=sel4, b[10]=sel4, b[11]=sel4, b[12]=sel4, b[13]=sel4, b[14]=sel4, b[15]=sel4, out=eOut);
+    And16(a=f, b[0]=sel5, b[1]=sel5, b[2]=sel5, b[3]=sel5, b[4]=sel5, b[5]=sel5, b[6]=sel5, b[7]=sel5, b[8]=sel5, b[9]=sel5, b[10]=sel5, b[11]=sel5, b[12]=sel5, b[13]=sel5, b[14]=sel5, b[15]=sel5, out=fOut);
+    And16(a=g, b[0]=sel6, b[1]=sel6, b[2]=sel6, b[3]=sel6, b[4]=sel6, b[5]=sel6, b[6]=sel6, b[7]=sel6, b[8]=sel6, b[9]=sel6, b[10]=sel6, b[11]=sel6, b[12]=sel6, b[13]=sel6, b[14]=sel6, b[15]=sel6, out=gOut);
+    And16(a=h, b[0]=sel7, b[1]=sel7, b[2]=sel7, b[3]=sel7, b[4]=sel7, b[5]=sel7, b[6]=sel7, b[7]=sel7, b[8]=sel7, b[9]=sel7, b[10]=sel7, b[11]=sel7, b[12]=sel7, b[13]=sel7, b[14]=sel7, b[15]=sel7, out=hOut);
+
+    Or16(a=aOut, b=bOut, out=abOut);
+    Or16(a=cOut, b=dOut, out=cdOut);
+    Or16(a=eOut, b=fOut, out=efOut);
+    Or16(a=gOut, b=hOut, out=ghOut);
+
+    Or16(a=abOut, b=cdOut, out=abcdOut);
+    Or16(a=efOut, b=ghOut, out=efghOut);
+
+    Or16(a=abcdOut, b=efghOut, out=out);
+}
