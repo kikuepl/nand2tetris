@@ -126,7 +126,7 @@ int main() {
 
     // First pass: symbol table creation
     while (getline(file, str)) {
-        if (str.empty() || str[0] == '/') continue;
+        if (str.empty() || str[0] == '/' || str[0] == ' ' || str[0] == 13 || str[0] == 10) continue;
         if (str[0] == '(') {
             CreateSymbol(str);
         } else {
@@ -141,7 +141,7 @@ int main() {
 
     // Second pass: parsing and writing output
     while (getline(file, str)) {
-        if (str.empty() || str[0] == '/' || str[0] == '(') continue;
+        if (str.empty() || str[0] == '/' || str[0] == '('  || str[0] == ' '|| str[0] == 13 || str[0] == 10) continue;
         ofile << Parser(str);
     }
 
