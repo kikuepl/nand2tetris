@@ -1,9 +1,12 @@
+//文頭にspaceが入っていることがある
+//コメントアウトや改行は無視したい
+
 #include <bits/stdc++.h>
 using namespace std;
 
-map<string, int> table;
-int line = 0;
-int var = 16;
+unordered_map<string, int> table;
+int pos = 0;
+int var = 17;
 
 void init() {
     table["R0"] = 0;
@@ -28,8 +31,17 @@ void init() {
     table["ARG"] = 2;
     table["THIS"] = 3;
     table["THAT"] = 4;
-    table["SCREEN"] = 16384;
+    table["SCREEN"] = 16385;
     table["KBD"] = 24576;
+}
+
+bool check(string str){
+    if (str[2] == ' ' || str[0] == '\n' || str[0] == '\r' || str[0] == '\0'){
+        return 1;
+    }else
+    {
+        return 0;
+    }
 }
 
 int TypeOfCommand(const string& str) {
@@ -41,7 +53,7 @@ int TypeOfCommand(const string& str) {
 
 void CreateSymbol(const string& str) {
     string symbol = str.substr(1, str.find(')') - 1);
-    table[symbol] = line;
+    table[symbol] = pos;
 }
 
 string ExtraAddress(const string& str) {
@@ -49,8 +61,8 @@ string ExtraAddress(const string& str) {
     return bitset<15>(address).to_string();
 }
 
-string ExtraSymbol(const string& str) {
-    string symbol = str.substr(1);
+string ExtraSymbol(const string str) {
+    string symbol = str.substr(1, str.size() - 1);
     if (table.find(symbol) == table.end()) {
         table[symbol] = var++;
     }
@@ -83,8 +95,8 @@ string DesttoBinary(const string& dest) {
     return res;
 }
 
-string JumptoBinary(const string& jump) {
-    static const unordered_map<string, string> Jump_map = {
+string JumptoBinary(string jump) {
+    static unordered_map<string, string> Jump_map = {
         {"JGT", "001"}, {"JEQ", "010"}, {"JGE", "011"},
         {"JLT", "100"}, {"JNE", "101"}, {"JLE", "110"},
         {"JMP", "111"}
@@ -97,13 +109,12 @@ string JumptoBinary(const string& jump) {
 string ALU(const string& str) {
     int eq = str.find('=');
     int semi = str.find(';');
-    
+
     string comp = (eq != string::npos) ? str.substr(eq + 1, semi - eq - 1) : str.substr(0, semi);
     comp = ComptoBinary(comp);
 
     string dest = (eq != string::npos) ? DesttoBinary(str.substr(0, eq)) : "000";
     string jump = (semi != string::npos) ? JumptoBinary(str.substr(semi + 1)) : "000";
-
     return comp + dest + jump;
 }
 
@@ -117,35 +128,47 @@ string Parser(const string& str) {
     }
 }
 
-int main() {
+int main(){
     string filename;
     cin >> filename;
     ifstream file(filename);
+
     string str;
+    stringstream buf;
+
+    if (file) {
+        buf << file.rdbuf();
+        str = buf.str();
+    }else
+    {
+        cout << "filename : " << filename << "は存在しません" << endl;
+        return 0;
+    }
     init();
-
-    // First pass: symbol table creation
-    while (getline(file, str)) {
-        if (str.empty() || str[0] == '/' || str[0] == ' ' || str[0] == 13 || str[0] == 10) continue;
-        if (str[0] == '(') {
-            CreateSymbol(str);
-        } else {
-            line++;
-        }
+    int i=0;
+    string text = "";
+    while (str[i]){
+        string line = "";
+        while(str[i] && str[i] != '\n') { line += str[i++]; }
+        if (line[0] == ' ') line = line.substr(2,line.size() - 1);
+        i++;
+        if(check(line)) { continue ;}
+        if (line[0] == '(') { CreateSymbol(line) ;}
+        else { pos++ ;}
+        text += line;
+        // cout << line;
     }
-    file.clear();
-    file.seekg(0, ios::beg);
-
-    string name = filename.substr(0, filename.find('.')) + ".hack";
-    ofstream ofile(name);
-
-    // Second pass: parsing and writing output
-    while (getline(file, str)) {
-        if (str.empty() || str[0] == '/' || str[0] == '('  || str[0] == ' '|| str[0] == 13 || str[0] == 10) continue;
-        ofile << Parser(str);
+    i = 0;
+    while (str[i]){
+        string line = "";
+        while(str[i] && str[i] != '\n') { line += str[i++]; }
+        i++;
+        if (line[0] == ' ') line = line.substr(2,line.size() - 1);
+        if (check(line)) { continue ;}
+        if (line[0] == '(') { continue ;}
+        // cout << line << endl;
+        cout << Parser(line);
     }
-
     file.close();
-    ofile.close();
     return 0;
 }
