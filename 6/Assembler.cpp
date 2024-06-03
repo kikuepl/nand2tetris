@@ -1,12 +1,9 @@
-//文頭にspaceが入っていることがある
-//コメントアウトや改行は無視したい
-
 #include <bits/stdc++.h>
 using namespace std;
 
 unordered_map<string, int> table;
 int pos = 0;
-int var = 17;
+int var = 16;
 
 void init() {
     table["R0"] = 0;
@@ -31,7 +28,7 @@ void init() {
     table["ARG"] = 2;
     table["THIS"] = 3;
     table["THAT"] = 4;
-    table["SCREEN"] = 16385;
+    table["SCREEN"] = 16384;
     table["KBD"] = 24576;
 }
 
@@ -44,27 +41,28 @@ bool check(string str){
     }
 }
 
-int TypeOfCommand(const string& str) {
+int TypeOfCommand(string str) {
     if (str[0] == '@') {
         return isalpha(str[1]) ? 0 : 1;
     }
     return 2;
 }
 
-void CreateSymbol(const string& str) {
+void CreateSymbol(string str) {
     string symbol = str.substr(1, str.find(')') - 1);
     table[symbol] = pos;
 }
 
-string ExtraAddress(const string& str) {
+string ExtraAddress(string str) {
     int address = stoi(str.substr(1));
     return bitset<15>(address).to_string();
 }
 
-string ExtraSymbol(const string str) {
-    string symbol = str.substr(1, str.size() - 1);
+string ExtraSymbol(string str) {
+    string symbol = str.substr(1);
     if (table.find(symbol) == table.end()) {
-        table[symbol] = var++;
+        table[symbol] = var;
+        var++;
     }
     return bitset<15>(table[symbol]).to_string();
 }
@@ -87,7 +85,7 @@ string ComptoBinary(const string& comp) {
     return it != Comp_map.end() ? it->second : "0000000";
 }
 
-string DesttoBinary(const string& dest) {
+string DesttoBinary(string dest) {
     string res = "000";
     if (dest.find('A') != string::npos) res[0] = '1';
     if (dest.find('D') != string::npos) res[1] = '1';
@@ -106,7 +104,7 @@ string JumptoBinary(string jump) {
     return it != Jump_map.end() ? it->second : "000";
 }
 
-string ALU(const string& str) {
+string ALU(string str) {
     int eq = str.find('=');
     int semi = str.find(';');
 
@@ -118,8 +116,9 @@ string ALU(const string& str) {
     return comp + dest + jump;
 }
 
-string Parser(const string& str) {
+string Parser(string str) {
     int commandType = TypeOfCommand(str);
+    // str = str.substr(0, str.size());
     switch (commandType) {
         case 0: return '0' + ExtraSymbol(str) + "\n";
         case 1: return '0' + ExtraAddress(str) + "\n";
@@ -128,11 +127,33 @@ string Parser(const string& str) {
     }
 }
 
+void strtrim(string &str) {
+    if (str.empty()) return;
+
+    size_t start = str.find_first_not_of(" \t\n\r");
+    if (start == string::npos) {
+        str.clear();
+        return;
+    }
+
+    size_t end = str.find_last_not_of(" \t\n\r");
+
+    str = str.substr(start, end - start + 1);
+}
+
+
+
 int main(){
     string filename;
     cin >> filename;
     ifstream file(filename);
 
+    string make_filename = "";
+    for(char c : filename){
+        if(c == '.') { break ;}
+        make_filename += c;
+    }
+    ofstream ofile(make_filename + ".hack");
     string str;
     stringstream buf;
 
@@ -150,7 +171,7 @@ int main(){
     while (str[i]){
         string line = "";
         while(str[i] && str[i] != '\n') { line += str[i++]; }
-        if (line[0] == ' ') line = line.substr(2,line.size() - 1);
+        strtrim(line);
         i++;
         if(check(line)) { continue ;}
         if (line[0] == '(') { CreateSymbol(line) ;}
@@ -163,11 +184,10 @@ int main(){
         string line = "";
         while(str[i] && str[i] != '\n') { line += str[i++]; }
         i++;
-        if (line[0] == ' ') line = line.substr(2,line.size() - 1);
+        strtrim(line);
         if (check(line)) { continue ;}
         if (line[0] == '(') { continue ;}
-        // cout << line << endl;
-        cout << Parser(line);
+        ofile << Parser(line);
     }
     file.close();
     return 0;
